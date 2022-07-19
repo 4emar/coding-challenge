@@ -36,12 +36,23 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
 
     // add the newly selected value to the selectedOptions
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = e.currentTarget.selectedOptions;
-
+        //const tempSelectedOptions = e.currentTarget.selectedOptions;
+        const exampleTempOptions = e.currentTarget.options;
         const tempOptions: string[] = [];
-        for (let i = 0; i < selectedOptions.length; i++) {
-            tempOptions.push(selectedOptions[i].value);
+        // here I tried by only going through the selected options, but I had trouble with
+        // the checks still staying on, and I needed to adjust that with the addition to the selected options
+        // for (let i = 0; i < tempSelectedOptions.length; i++) {
+        //     tempOptions.push(tempSelectedOptions[i].value);
+        // }
+        for (let i = 0; i < exampleTempOptions.length; i++) {
+            if (exampleTempOptions[i].selected) {
+                exampleTempOptions[i].innerHTML = exampleTempOptions[i].value + " ✓";
+                tempOptions.push(exampleTempOptions[i].value);
+            } else {
+                exampleTempOptions[i].innerHTML = exampleTempOptions[i].value;
+            }
         }
+
         setInputValue("");
         setSelectedOptions(tempOptions);
     }
@@ -67,7 +78,7 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
     // add or remove a checkmark on a selected/deselected option
     const handleOptionClick = (e: React.MouseEvent<HTMLOptionElement>) => {
         if (selectedOptions.includes(e.currentTarget.value)) {
-            e.currentTarget.innerHTML = e.currentTarget.innerHTML + " ✓";
+            e.currentTarget.innerHTML = e.currentTarget.value + " ✓";
         } else {
             e.currentTarget.innerHTML = e.currentTarget.value;
         }

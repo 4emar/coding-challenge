@@ -1,3 +1,5 @@
+// I cannot notice the mistake here, I think that this conditional rendering is good, except for the missing Item component
+// which I modified on the first example (without the selected and onSelect attributes)
 // const Component: FC = () => {
 //     const { error, data, loading } = useQuery(SomeQuery);
 //

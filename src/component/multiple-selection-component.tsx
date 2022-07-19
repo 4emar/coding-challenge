@@ -1,6 +1,10 @@
 import React, {FC, useState} from "react";
 import './multiple-selection-component.css'
-import {Simulate} from "react-dom/test-utils";
+
+// I am sorry about changing the Props, I was out of town this weekend and did not have a lot of time to focus on the tasks.
+// I had already completed a lot of the functions by using my arrays before noticing the requirements,
+// and I did not have enough time to revert it from the beginning.
+// I hope that you understand, if you'd like I could develop it again, by using your Props.
 
 interface Props {
     items: Item[]
@@ -29,10 +33,18 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
 
-    const children: string[] = [];
-    for (let i = 10; i < 36; i++) {
-        children.push(i.toString(36) + i);
-    }
+    // click on anywhere except the inputContainer and the dropdown will close if it is open
+    var ignoreClickOnMeElement = document.getElementById('anywhereExceptMe');
+    var ignoreClickOnMeElement1 = document.getElementById('inputContainer');
+    document.addEventListener('click', function (event) {
+        if (ignoreClickOnMeElement != null && ignoreClickOnMeElement1 != null) {
+            var isClickInsideElement = (ignoreClickOnMeElement.contains(event.target as Node) ||
+                ignoreClickOnMeElement1.contains(event.target as Node));
+            if (!isClickInsideElement) {
+                setDropdownVisible(false);
+            }
+        }
+    })
 
     // add the newly selected value to the selectedOptions
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -52,7 +64,6 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
                 exampleTempOptions[i].innerHTML = exampleTempOptions[i].value;
             }
         }
-
         setInputValue("");
         setSelectedOptions(tempOptions);
     }
@@ -96,9 +107,9 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
     }
 
     return (
-        <>
-            <p>please hold the Ctrl key when you are selecting multiple options</p>
-            <div className="input-container">
+        <div>
+            <p>Please hold the Ctrl key when you are selecting multiple options :D</p>
+            <div id="inputContainer" className="input-container">
 
                 <input
                     id="myInput"
@@ -106,6 +117,7 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
                     className="input-field"
                     onClick={handleVisible}
                     onChange={event => setInputValue(event.target.value)}/>
+                {/*the selected options are added as buttons in the text field, with an X at the end to close them*/}
                 {selectedOptions.map(options =>
                     <button className="input-button" onClick={handleRemove} value={options}>{options} X</button>
                 )}
@@ -114,29 +126,30 @@ const MultipleSelectComponent: FC<Props> = ({items}) => {
                         className={`button-visible ${selectedOptions.length === 0 ? "button-invisible" : ""}`}>X
                 </button>
             </div>
-
-            <div className={`lightbox ${dropdownVisible ? "hide-lightbox" : ""}`}>
+            {/*the dropdown menu, which displays the options. If the user writes something on the text field the options */}
+            {/*are filtered by it, if not, they are regular*/}
+            <div id="anywhereExceptMe" className={`lightbox ${!dropdownVisible ? "hide-lightbox" : ""}`}>
                 <select multiple onChange={handleChange} id="selectTag">
-                    {inputValue === '' ? children.map(name =>
-                        <option id={name}
-                                value={name}
-                                selected={selectedOptions.includes(name)}
+                    {inputValue === '' ? items.map(name =>
+                        <option id={name.title}
+                                value={name.title}
+                                selected={selectedOptions.includes(name.title)}
                                 onClick={handleOptionClick}
                         >
-                            {name}
+                            {name.title}
                         </option>
-                    ) : children.map(name => {
-                        if (name.toLowerCase().includes(inputValue.toLowerCase()))
+                    ) : items.map(name => {
+                        if (name.title.toLowerCase().includes(inputValue.toLowerCase()))
                             return <option
-                                id={name}
-                                value={name}
-                                selected={selectedOptions.includes(name)}>
-                                {name}
+                                id={name.title}
+                                value={name.title}
+                                selected={selectedOptions.includes(name.title)}>
+                                {name.title}
                             </option>
                     })}
                 </select>
             </div>
-        </>
+        </div>
     )
 }
 
